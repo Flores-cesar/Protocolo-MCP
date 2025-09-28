@@ -1,6 +1,5 @@
 from mcp.server.fastmcp import FastMCP
 from typing import Literal
-
 from services.empleados import (
     get_empleados, create_empleado, get_empleado_detail,
     update_empleado, delete_empleado
@@ -9,18 +8,19 @@ from helpers.formatters import format_empleado
 
 mcp_gestion = FastMCP("gestion del personal")
 
+# ================== EMPLEADOS ==================
 @mcp_gestion.tool()
 async def list_empleados() -> str:
     """Obtener lista completa de empleados."""
     data = await get_empleados()
     if not data:
-        return "Error en la comunicacion con la api."
+        return "Error en la comunicación con la API."
+    
     empleados = data.get("empleados", [])
-
     if not empleados:
         return "No hay empleados registrados en el sistema."
         
-    return "\n".join(format_empleado(empleado) for empleado in empleados)
+    return "\n".join(format_empleado(e) for e in empleados)
 
 
 @mcp_gestion.tool()
@@ -41,9 +41,11 @@ async def get_empleado(id_empleado: int) -> str:
 
 
 @mcp_gestion.tool()
-async def add_empleado(nombre: str, apellido: str, correo: str, rol: int, 
-                       fecha_ingreso: str, salario: float, edad: int, 
-                       estado: Literal["activo", "inactivo", "suspendido", "baja"] = "activo") -> str:
+async def add_empleado(
+    nombre: str, apellido: str, correo: str, rol: int,
+    fecha_ingreso: str, salario: float, edad: int,
+    estado: Literal["activo", "inactivo", "suspendido", "baja"] = "activo"
+) -> str:
     """Crear un nuevo empleado."""
     nuevo = {
         "nombre": nombre,
@@ -60,12 +62,12 @@ async def add_empleado(nombre: str, apellido: str, correo: str, rol: int,
 
 
 @mcp_gestion.tool()
-async def edit_empleado(id_empleado: int,nombre: str, apellido: str, edad: int,
-                        fecha_ingreso: str, rol: int, salario: float,
-                        estado: Literal["activo", "inactivo", "suspendido", "baja"] = "activo") -> str:
+async def edit_empleado(
+    id_empleado: int, nombre: str, apellido: str, edad: int,
+    fecha_ingreso: str, rol: int, salario: float,
+    estado: Literal["activo", "inactivo", "suspendido", "baja"] = "activo"
+) -> str:
     """Editar un empleado existente. Actualiza todos los campos provistos."""
-    
-    # Creamos el payload explícitamente
     payload = {
         "nombre": nombre,
         "apellido": apellido,
@@ -77,7 +79,6 @@ async def edit_empleado(id_empleado: int,nombre: str, apellido: str, edad: int,
     }
 
     actualizado = await update_empleado(id_empleado, payload)
-
     if not actualizado:
         return f"No se pudo actualizar el empleado con ID {id_empleado}."
 
