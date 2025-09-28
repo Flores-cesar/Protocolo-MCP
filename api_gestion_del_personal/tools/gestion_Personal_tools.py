@@ -4,7 +4,13 @@ from services.empleados import (
     get_empleados, create_empleado, get_empleado_detail,
     update_empleado, delete_empleado
 )
-from helpers.formatters import format_empleado
+from services.roles import (
+    get_roles, get_rol_detail
+)
+from services.departamentos import (
+    get_departamentos, get_departamento_detail
+)
+from helpers.formatters import format_empleado, format_rol, format_departamento
 
 mcp_gestion = FastMCP("gestion del personal")
 
@@ -91,3 +97,61 @@ async def remove_empleado(id_empleado: int) -> str:
     if not resultado:
         return f"No se encontró un empleado con ID {id_empleado}."
     return f"Empleado con ID {id_empleado} eliminado correctamente."
+
+
+# ================== ROLES ==================
+@mcp_gestion.tool()
+async def list_roles() -> str:
+    """Obtener lista completa de roles."""
+    data = await get_roles()
+    if not data:
+        return "Error en la comunicación con la API."
+    
+    roles = data.get("roles", [])
+    if not roles:
+        return "No hay roles registrados en el sistema."
+    
+    return "\n".join(format_rol(r) for r in roles)
+
+
+@mcp_gestion.tool()
+async def get_rol(id_rol: int) -> str:
+    """Obtener detalle de un rol por su ID."""
+    data = await get_rol_detail(id_rol)
+    if not data:
+        return "Error en la comunicación con la API."
+    
+    rol = data.get("rol")
+    if not rol:
+        return f"No se encontró un rol con ID {id_rol}."
+    
+    return format_rol(rol)
+
+
+# ================== DEPARTAMENTOS ==================
+@mcp_gestion.tool()
+async def list_departamentos() -> str:
+    """Obtener lista completa de departamentos."""
+    data = await get_departamentos()
+    if not data:
+        return "Error en la comunicación con la API."
+    
+    departamentos = data.get("departamentos", [])
+    if not departamentos:
+        return "No hay departamentos registrados en el sistema."
+
+    return "\n".join(format_departamento(d) for d in departamentos)
+
+
+@mcp_gestion.tool()
+async def get_departamento(id_departamento: int) -> str:
+    """Obtener detalle de un departamento por su ID."""
+    data = await get_departamento_detail(id_departamento)
+    if not data:
+        return "Error en la comunicación con la API."
+    
+    departamento = data.get("departamento")
+    if not departamento:
+        return f"No se encontró un departamento con ID {id_departamento}."
+
+    return format_departamento(departamento)
