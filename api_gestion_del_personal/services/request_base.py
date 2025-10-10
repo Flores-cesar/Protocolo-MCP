@@ -1,8 +1,10 @@
 from typing import Any, Optional
 import httpx
+from dotenv import load_dotenv
+import os
 
 # Configuración de la API
-API_BASE = "http://localhost:8000/api"
+API_BASE = f"{os.getenv('API_BASE')}/api"
 USER_AGENT = "django-client/1.0"
 
 async def make_api_request(url: str, method: str = "GET", data: Optional[dict] = None) -> dict[str, Any] | None:

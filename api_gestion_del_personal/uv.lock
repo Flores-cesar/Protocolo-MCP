@@ -32,6 +32,7 @@ dependencies = [
     { name = "fastmcp" },
     { name = "httpx" },
     { name = "mcp", extra = ["cli"] },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
@@ -39,6 +40,7 @@ requires-dist = [
     { name = "fastmcp", specifier = ">=2.12.3" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.14.1" },
+    { name = "python-dotenv" },
 ]
 
 [[package]]

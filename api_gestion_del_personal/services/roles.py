@@ -1,7 +1,10 @@
 from typing import Any
 from services.request_base import make_api_request
+from dotenv import load_dotenv
+import os
 
-API_BASE = "http://localhost:8000/api"
+load_dotenv()
+API_BASE = f"{os.getenv('API_BASE')}/api"
 
 # ============= ROLES =============
 async def get_roles() -> dict[str, Any] | None:
